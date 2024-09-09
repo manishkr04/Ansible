@@ -1,5 +1,5 @@
-##Ansible
-####Ansible is a configuration management Tools
+## Ansible
+#### Ansible is a configuration management Tools
 
 - Create 1 Ec2 Instance and create 3 alike Ec2 Instance with same KEY
 - Connect to 1st EC2 instance 
