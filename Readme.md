@@ -75,3 +75,97 @@ servers uptime check
 ```bash
 $ ansible servers -a "uptime" -i /home/ubuntu/ansible/hosts --private_key=~/.ssh/ansible_key
 ```
+
+
+***
+## Creating and Deploying a Playbook
+ 
+
+Creating Playbooks
+
+Playbook to create a file
+```bash
+$ cd /etc/ansible
+$ sudo mkdir playbooks
+$ cd playbooks/
+$ vim create_file.yml
+$ sudo vim create_file.yml---
+
+- name: This playbook will create a file
+  hosts: all
+  become: true
+  tasks:
+  - name: Create a file
+    file:
+      path: /home/ubuntu/subscribe.txt
+      state: touch
+```
+
+Run the Playbook to create a file to all the server
+```bash
+$ ansible-playbook create_file.yml --private-key=~/.ssh/ansible_key
+
+$ ansible all -a "ls" --private-key=~/.ssh/ansible_key
+```
+Playbook to  Create User
+```bash
+sudo vim create_user.yml
+```
+
+```bash
+---
+- name: This playbook will create a user
+  hosts: all
+  become: true
+  tasks:
+  - name: To create a user name manish
+    user: name=manish
+```
+
+```bash
+ansible-playbook create_user.yml --private-key=~/.ssh/ansible_key
+```
+
+
+Playbook to Install Docker
+
+```bash
+$ sudo vim install_docker.yml
+```
+
+```bash
+---
+- name: This Playbook will install Docker in all the server
+  hosts: all
+  become: true
+  tasks:
+  - name: Add Docker GPG apt key
+    apt_key:
+     url: https://download.docker.com/linux/ubuntu/gpg
+     state: present
+
+  - name: Add Docker Repository
+    apt_repository:
+      repo: deb https://download.docker.com/linux/ubuntu focal stable
+      state: present
+
+  - name: Install Docker
+    apt:
+     name: docker-ce
+     state: latest
+
+```
+
+Before Installing the Docker file upgrade all the server
+```bash
+$ ansible all  -m apt  -a "upgrade=yes update_cache=yes cache_valid_time=86400" --become --private-key=~/.ssh/ansible_key
+```
+
+```bash
+ansible-playbook install_docker.yml --private-key=~/.ssh/ansible_key
+```
+
+Lastly you can check the installation of Docker by Running the ansible Shell module command "Docker --version"
+```bash
+$ ansible all -m shell -a "docker --version" --private-key=~/.ssh/ansible_key
+```
